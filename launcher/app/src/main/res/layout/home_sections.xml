@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The sectioned Home (home_sections_layout, HomeSections), added under the top bar in code: Continue watching, then
+     the Apps row, each with the focused item's name under it. The drawer header shows instead while All apps is
+     open. Nothing here is inflated with the switch off. -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:id="@+id/homeSections"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:orientation="vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+        <!-- Continue watching: WatchNextRow adds its card strip after the header. Gone without cards. -->
+        <LinearLayout
+            android:id="@+id/wnSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:orientation="vertical"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/wnHeader"
+                style="@style/SectionHeader"
+                android:text="@string/watch_next_title" />
+
+            <TextView
+                android:id="@+id/wnCaption"
+                style="@style/SectionCaption" />
+
+            <TextView
+                android:id="@+id/wnCaptionSub"
+                style="@style/SectionCaptionSub" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/appsHeader"
+            style="@style/SectionHeader"
+            android:text="@string/home_apps" />
+
+        <LinearLayout
+            android:id="@+id/appsRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"
+            android:orientation="horizontal"
+            android:clipChildren="false"
+            android:clipToPadding="false" />
+
+        <TextView
+            android:id="@+id/appsCaption"
+            style="@style/SectionCaption" />
+    </LinearLayout>
+
+    <!-- The All apps drawer's header, over the grid. -->
+    <LinearLayout
+        android:id="@+id/drawerHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:orientation="horizontal"
+        android:baselineAligned="true"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/SectionHeader"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/all_apps" />
+
+        <TextView
+            android:id="@+id/drawerCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textColor="#FFB9C6D3"
+            android:textSize="13sp"
+            android:fontFamily="@string/font_regular" />
+    </LinearLayout>
+</merge>

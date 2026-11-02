@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A tile in the Apps section of the sectioned Home (HomeSections): the app's banner, or its icon and name on the
+     dark tile; the All apps tile uses the same frame. HomeSections sets its size to the drawer's tile size. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/homeTile"
+    android:layout_width="148dp"
+    android:layout_height="83dp"
+    android:background="@drawable/tile_bg"
+    android:focusable="true"
+    android:clickable="true">
+
+    <ImageView
+        android:id="@+id/homeTileBanner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:contentDescription="@null" />
+
+    <LinearLayout
+        android:id="@+id/homeTileIconBox"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:ignore="UseCompoundDrawables">
+        <!-- An ImageView rather than a compound drawable: an app icon's own size varies, the ImageView fits it. -->
+
+        <ImageView
+            android:id="@+id/homeTileIcon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:id="@+id/homeTileLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:gravity="center"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textColor="#FFFFFFFF"
+            android:textSize="12sp"
+            android:fontFamily="@string/font_body" />
+    </LinearLayout>
+</FrameLayout>

@@ -21,6 +21,7 @@
     <string name="festival_halloween_greeting">Happy Halloween</string>
     <string name="ethernet">Ethernet</string>
     <string name="offline">Offline</string>
+    <string name="watch_next_title">Continue watching</string>
     <string name="not_available">Not available on this TV</string>
     <string name="cant_open">Can\'t open %1$s</string>
     <string name="date_format">EEEE  d MMMM</string>
@@ -158,4 +159,6 @@
     <string name="clock_format_system">System</string>
     <string name="clock_format_12">12-hour</string>
     <string name="clock_format_24">24-hour</string>
+    <string name="home_apps">Apps</string>
+    <string name="all_apps">All apps</string>
 </resources>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One Continue watching card (WatchNextRow): the poster on the dark tile, its progress, and two lines under it.
+     The sizes here are the design size; WatchNextRow sets the card's size from the room above the dock. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="160dp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="16dp"
+    android:orientation="vertical"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <FrameLayout
+        android:id="@+id/wnCard"
+        android:layout_width="160dp"
+        android:layout_height="90dp"
+        android:background="@drawable/tile_bg"
+        android:focusable="true"
+        android:clickable="true">
+
+        <!-- No poster, or one from the network: the title on the dark tile. -->
+        <TextView
+            android:id="@+id/wnFallback"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="10dp"
+            android:maxLines="3"
+            android:ellipsize="end"
+            android:textColor="#FFFFFFFF"
+            android:textSize="14sp"
+            android:fontFamily="@string/font_body" />
+
+        <ImageView
+            android:id="@+id/wnPoster"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:contentDescription="@null" />
+
+        <FrameLayout
+            android:id="@+id/wnTrack"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="8dp"
+            android:background="#59FFFFFF"
+            android:visibility="gone">
+
+            <View
+                android:id="@+id/wnFill"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FFFFFFFF" />
+        </FrameLayout>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/wnTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:includeFontPadding="false"
+        android:textColor="#E6FFFFFF"
+        android:textSize="13sp"
+        android:fontFamily="@string/font_medium" />
+
+    <TextView
+        android:id="@+id/wnSub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:includeFontPadding="false"
+        android:textColor="#99FFFFFF"
+        android:textSize="11sp"
+        android:fontFamily="@string/font_regular" />
+</LinearLayout>

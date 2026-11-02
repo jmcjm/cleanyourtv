@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Continue watching row (WatchNextRow): the cards apps publish to the system's Watch Next table, above the dock.
+     Kept out of config.xml so this local patch stays in files of its own. Off is watch_next_row false; with it
+     off nothing new runs: no query, no observer, no thread. Needs READ_TV_LISTINGS, granted from a shell with
+     pm grant com.gathin.tvhome android.permission.READ_TV_LISTINGS; without it the row stays hidden. -->
+<resources>
+    <!-- Show the row. Off by default (false); this TV turns it on. Needs dock_row, and is left out with
+         single_row and cinematic_home, whose layouts have no room for it. -->
+    <bool name="watch_next_row">true</bool>
+    <!-- Only these apps' rows; empty takes every app's. -->
+    <string-array name="watch_next_packages" translatable="false">
+        <item>org.jellyfin.androidtv</item>
+    </string-array>
+    <!-- The sectioned Home (HomeSections): the top bar, a Continue watching section, an Apps section with the dock
+         apps and an All apps tile, and a full-screen All apps drawer in place of the grid and the App library. Off is
+         false, and with it off Home is the dock and grid as before; this TV turns it on. The Continue watching section
+         needs watch_next_row as well. The remote's Apps button (KEYCODE_ALL_APPS) and app_keys' "library" open the
+         drawer while it is on. -->
+    <bool name="home_sections_layout">true</bool>
+    <!-- With home_sections_layout: the backdrop follows focus (Backdrop). A Continue watching card shows its local
+         thumbnail or poster across the screen, softened and darkened; an app tile tints the gradient with the app's
+         colour; the All apps tile, the top bar and the drawer keep the plain gradient. Off is false: the plain
+         gradient stays put, as before; this TV turns it on. Images are only ever read from content:// and
+         android.resource:// URIs, never the network. -->
+    <bool name="home_dynamic_backdrop">true</bool>
+    <!-- Rows last watched longer ago than this are left out (apps leave them for months); 0 keeps every age. -->
+    <integer name="watch_next_max_age_days">60</integer>
+</resources>

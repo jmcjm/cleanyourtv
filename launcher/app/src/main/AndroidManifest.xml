@@ -21,6 +21,10 @@
     <!-- YaOS (Yandex TV OS): HDMI, AV and the tuner all play in com.yandex.tv.live, whose activities require
          this permission (protection level normal, so it is granted at install). Ignored on other TVs. -->
     <uses-permission android:name="yandex.tv.permission.ACCESS_TV_SOURCE" />
+    <!-- watch_next_row (res/values/watch_next.xml): reads the Continue watching rows apps publish. A runtime
+         permission, never requested with a dialog: granted with
+         pm grant com.gathin.tvhome android.permission.READ_TV_LISTINGS. Without it the row stays hidden. -->
+    <uses-permission android:name="android.permission.READ_TV_LISTINGS" />
 
     <!-- Android 11+ package visibility: lets the launcher list the TV apps it shows as tiles, and the
          apps that declare a module card (docs/specs/card.md). -->
@@ -68,6 +72,8 @@
         <!-- Coocaa OS sources for the Inputs menu (coocaa_sources); see CoocaaSources. -->
         <provider android:authorities="com.skyworth.tv.provider" />
         <provider android:authorities="com.skyworth.tv.sdk.provider" />
+        <!-- watch_next_row: the TV provider that holds the Watch Next table. -->
+        <provider android:authorities="android.media.tv" />
     </queries>
 
     <application
@@ -105,6 +111,20 @@
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- home_sections_layout (res/values/watch_next.xml): the remote's Apps button. Android keeps KEYCODE_ALL_APPS from
+             every app and sends this intent instead; MainActivity opens the All apps drawer for it. Disabled here and
+             switched on by MainActivity only while that switch is on, so with it off nothing new answers the button. -->
+        <activity-alias
+            android:name=".AllAppsAlias"
+            android:targetActivity=".MainActivity"
+            android:exported="true"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.ALL_APPS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity-alias>
 
         <activity
             android:name=".LauncherSettingsActivity"

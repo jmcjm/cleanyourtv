@@ -183,11 +183,11 @@ public class AppAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final TileListener listener;
     private final int dockSize;
     /** config dock_row: false makes the dock apps the first tiles of one plain grid (names shown, no empty slots). */
-    private final boolean dockRow;
+    private boolean dockRow;
     /** config single_row: tiles sit in one sideways row, each as wide as a grid column would be. */
-    private final boolean singleRow;
+    private boolean singleRow;
     /** config always_show_names: the alpha of an unfocused tile's name (0 hides it). */
-    private final float restNameAlpha;
+    private float restNameAlpha;
     /** cinematic_home: only then does a launch record the last-opened app the shelf uses. */
     private final boolean cinematic;
     /** Dock order (config.xml dock_apps, or a theme's config.json). */
@@ -202,7 +202,12 @@ public class AppAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final Set<String> libraryPreload;
     private final boolean animations;
     private final boolean advancedEffects;
-    private final boolean showLibrary;
+    private boolean showLibrary;
+    /**
+     * home_sections_layout (res/values/watch_next.xml): the grid is the full-screen All apps drawer. Every launchable
+     * app, alphabetical, each with its name, no dock slots and no library pill; see useAsDrawer().
+     */
+    private boolean drawer;
     /** Packages with a leanback entry at the last reload(): their tiles launch with the leanback category. */
     private Set<String> leanbackPackages = new HashSet<>();
     private final boolean showHomeSettings;
@@ -253,6 +258,15 @@ public class AppAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         setHasStableIds(true);
     }
 
+    /** home_sections_layout: this adapter feeds the All apps drawer rather than Home's dock and grid. */
+    void useAsDrawer() {
+        drawer = true;
+        dockRow = false;
+        singleRow = false;
+        showLibrary = false;
+        restNameAlpha = 0.7f;
+    }
+
     /**
      * Rebuilds the tiles. A shown module card stands in for every tile of its package (same component,
      * so focus follows it); hidden_apps wins over a card, and a card's package in dock_apps takes that slot.
@@ -268,7 +282,16 @@ public class AppAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         // Copy before merging: LibraryApps.load() may return an immutable empty set (#419).
         Set<String> added = new HashSet<>(LibraryApps.load(ctx));
         added.addAll(libraryPreload);
-        Set<String> removed = LibraryApps.loadRemoved(ctx);
+        Set<String> removed = drawer ? Collections.emptySet() : LibraryApps.loadRemoved(ctx);
+        // The drawer lists every launchable app: a phone app without a TV entry counts as a TV app here.
+        if (drawer) {
+            // A copy: leanbackPackages must keep only the real TV entries, which launch with the leanback category.
+            tvPackages = new HashSet<>(tvPackages);
+            for (ResolveInfo ri : pm.queryIntentActivities(
+                    new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER), 0)) {
+                if (ri.activityInfo != null && tvPackages.add(ri.activityInfo.packageName)) found.add(ri);
+            }
+        }
         if (!added.isEmpty()) {
             Set<String> seen = new HashSet<>(tvPackages);
             for (ResolveInfo ri : pm.queryIntentActivities(
@@ -312,6 +335,7 @@ public class AppAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         }
         Collections.sort(fresh, (a, b) -> {
+            if (drawer) return a.label.compareToIgnoreCase(b.label);
             // The owner's own order first; tiles it does not know (new installs) follow by the rule below.
             int saved = Order.compare(savedRanks, a.component.flattenToShortString(), b.component.flattenToShortString());
             if (saved != 0) return saved;
@@ -658,6 +682,26 @@ public class AppAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     /** A position focus can land on: an empty dock slot gives the last dock app. */
     int focusablePosition(int position) {
         return DockSlots.focusable(position, docked, emptySlots);
+    }
+
+    /** Position of the first tile of this package, or -1. */
+    int positionOfPackage(String pkg) {
+        for (int i = 0; i < items.size(); i++) if (items.get(i).pkg != null && items.get(i).pkg.equals(pkg)) return i;
+        return -1;
+    }
+
+    /** The tile's banner, or null when it shows its icon. */
+    Drawable bannerAt(int position) {
+        return position >= 0 && position < items.size() ? items.get(position).banner : null;
+    }
+
+    Drawable iconAt(int position) {
+        return position >= 0 && position < items.size() ? items.get(position).icon : null;
+    }
+
+    /** Opens the tile's app as a click on it would (home_sections_layout's apps row). */
+    void launchAt(int position) {
+        if (position >= 0 && position < items.size()) launch(items.get(position));
     }
 
     String labelAt(int position) {

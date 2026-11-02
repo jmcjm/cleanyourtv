@@ -99,4 +99,7 @@
     <string name="clock_format_system">Systemowy</string>
     <string name="clock_format_12">12-godzinny</string>
     <string name="clock_format_24">24-godzinny</string>
+    <string name="watch_next_title">Oglądaj dalej</string>
+    <string name="home_apps">Aplikacje</string>
+    <string name="all_apps">Wszystkie aplikacje</string>
 </resources>
