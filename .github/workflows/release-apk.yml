@@ -23,7 +23,10 @@ jobs:
           java-version: '17'
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        # Pinned like ci.yml; the default package list asks for the long-gone 'tools' package and fails.
+        uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3.2.2
+        with:
+          packages: platforms;android-34 build-tools;34.0.0
 
       - name: Configure release keystore
         env:
