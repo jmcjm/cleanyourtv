@@ -1,3 +1,62 @@
+# CleanYourTV, jmcjm's fork
+
+This is a personal fork of [Gathin23/cleanyourtv](https://github.com/Gathin23/cleanyourtv), set up for a
+**Xiaomi TV Stick 4K 2nd gen** (MiTV-AFMU1, Google TV 14). Everything from upstream is still here and documented
+below; this section only covers what the fork adds.
+
+## What the fork adds to the launcher
+
+All of it sits behind switches in
+[`launcher/app/src/main/res/values/watch_next.xml`](launcher/app/src/main/res/values/watch_next.xml). With them off,
+the launcher behaves exactly like upstream.
+
+| Switch | What it does |
+|---|---|
+| `watch_next_row` | A **Continue watching** row from other apps' Watch Next entries in the system TV provider (`READ_TV_LISTINGS`, no network). `watch_next_packages` limits it to some apps (here Jellyfin), `watch_next_max_age_days` drops stale rows. Next episodes come first, then titles stopped part-way. |
+| `home_sections_layout` | A sectioned Home: a **Continue watching** section with cards the size of the app tiles and the focused title under the row, then an **Apps** row with the dock apps and an **All apps** tile. The app grid and the dock band are gone from Home. |
+| (same) | A full-screen **All apps** drawer: every launchable app in a five-column grid, alphabetical. The remote's Apps button opens it too. |
+| `home_dynamic_backdrop` | The Home background follows focus: the focused card's picture, darkened, or a gradient in the focused app's colour. |
+
+Labels come from string resources and follow the system language (English and Polish included).
+
+The stick's own settings are in [`launcher/app/src/main/res/values/config.xml`](launcher/app/src/main/res/values/config.xml):
+dock Jellyfin, Spotify, YouTube and Aurora Store; the remote's YouTube, Netflix and Prime Video buttons open
+YouTube, Jellyfin and Spotify; a plain rim focus highlight (`glass_style` `rim`) without overshoot.
+
+## Installing it with Obtainium
+
+Releases are built by [`.github/workflows/release-apk.yml`](.github/workflows/release-apk.yml) and signed with this
+fork's own key, so [Obtainium](https://github.com/ImranR98/Obtainium) can keep the launcher up to date.
+
+1. Debloat the TV and install the launcher once as upstream describes ([Quick start](#quick-start)).
+2. Install Obtainium on the TV and allow it to install apps:
+   `tools/tv.py 'appops set dev.imranr.obtainium REQUEST_INSTALL_PACKAGES allow'`.
+3. The release is signed with a different key than a local build, so the local launcher has to go first. Keep a
+   Home in place while it does:
+   - `tools/tv.py 'pm enable --user 0 com.google.android.apps.tv.launcherx'` and press Home: the stock launcher is
+     back.
+   - `tools/tv.py 'pm uninstall com.gathin.tvhome'`.
+4. In Obtainium, add `https://github.com/jmcjm/cleanyourtv` (or open
+   `obtainium://add/https://github.com/jmcjm/cleanyourtv`) and install `tvhome.apk`. Obtainium is then the
+   launcher's installer and can update it in the background.
+5. Make it Home again and put the stock launcher away, checking each step:
+   - `tools/tv.py 'pm disable-user --user 0 com.google.android.apps.tv.launcherx'`, press Home, and confirm with
+     `tools/tv.py 'dumpsys activity activities | grep mFocusedApp'`.
+   - `tools/tv.py 'pm grant com.gathin.tvhome android.permission.READ_TV_LISTINGS'`.
+   - Turn the remote-key helper back on as `launcher/build-and-install.sh` does with `INPUT_KEY_SERVICE=1`.
+
+A launcher built locally is signed with the debug key and will not install over the Obtainium one.
+
+## Making a release
+
+Commit to `main`, then push a tag: `git tag -a v3.5.0 -m "..." && git push origin main v3.5.0`. The workflow builds
+the APK, signs it with the key in the repository secrets (`KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`,
+`KEY_PASSWORD`) and publishes it as a release. The versionCode follows the run number, so each release installs
+over the one before. A tag with a suffix such as `v3.5.0-rc1` becomes a pre-release, which Obtainium skips by
+default.
+
+---
+
 <p align="center">
   <a href="https://cleanyour.tv"><img src="https://raw.githubusercontent.com/Gathin23/cleanyourtv/main/docs/banner.png" alt="CleanYourTV. Your TV, minus the ads. Strip the bloatware from any Android TV or Google TV over Wi-Fi and replace the ad-filled home screen with a clean launcher that looks like an Apple TV. No root, no cable, nothing uninstalled, and a one-line restore." width="800"></a>
 </p>
